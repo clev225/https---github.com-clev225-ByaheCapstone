@@ -1,0 +1,302 @@
+{% extends "reservation/reserve-layout.html" %}
+{% load static %}
+
+{% block title %}
+    Book Your Travel | Byahe Travel
+{% endblock title %}
+<html lang="en">
+{% block head %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Byahe Online Travel Reservation</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    {% block style %}
+    <link rel="stylesheet" href="{% static '/styles/reservation-styles.css' %}">
+    {% endblock style%}
+
+    
+    {% include "loader.html" %}
+</head>
+{% endblock head %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand logo" href="{% url 'logged_in'%}">
+            <img src="{% static '/images/backgrounds/byahe-logo.png' %}" alt="Logo" class="navbar-logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto d-flex align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="#about-us">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#book-your-ride">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#vehicles-section">Vehicles</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#ratings-and-reviews">Reviews</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#contacts">Contact</a>
+                </li>
+
+                <li class="nav-item">
+                    <!-- Existing Get Started Button -->
+                    <a href="{% url 'reservation_form_view' %}" class="btn get-started-btn ms-3 book-now-btn">Book Now</a>
+                </li>
+            </ul>
+            <!-- User Icon with Dropdown -->
+            <ul class="navbar-nav ms-1 d-flex align-items-center">
+                <li class="nav-item dropdown">
+                    <a class="nav-link d-flex align-items-center dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle" style="font-size: 2.3rem; margin-right: 0.5rem;"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end animate__animated animate__fadeIn animate__faster" aria-labelledby="userDropdown">
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-user" style="margin-right: 0.5rem;"></i>User Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'logout' %}">
+                                <i class="fas fa-sign-out-alt" style="margin-right: 0.5rem; color: red;"></i>Log Out
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock navbar %}
+
+{% block hero_section %}
+<!-- Hero Section for Reservation Form -->
+<section class="reservation-hero" style="
+    color: white;
+    min-height: 50vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 80px 40px;
+    margin-top: 40px;
+    text-align: left;
+    background-image: url('{% static 'images/backgrounds/vehicle-bg.jpg' %}');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    ">
+    <div class="container text-center">
+        <h1 class="display-4">Reservation Form</h1>
+        <p class="lead">Fill up your reservation form to get your travel started.</p>
+    </div>
+</section>
+{% endblock hero_section %}
+
+{% block reservation_form %}
+<div class="container my-5">
+    <div class="card shadow-lg p-4">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">Byahe Reservation Form</h2>
+            
+            <form id="reservationForm" method = "POST" enctype = "multipart/form-data" action = "{% url 'reservation_form_view' %}">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="fullName" name="full_name" placeholder="Enter full name" value={{ request.user.full_name }}>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="contactNumber" class="form-label">Contact Number</label>
+                        <input type="text" class="form-control" id="contactNumber" name = "contact_number" placeholder="Enter contact number" value={{ request.user.contact_number }}>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="pickupDate" class="form-label">Pickup Date (mm/dd/yyyy)</label>
+                        <input type="date" class="form-control" id="pickupDate" name = "pickup_date">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="dropoffDate" class="form-label">Dropoff Date (mm/dd/yyyy)</label>
+                        <input type="date" class="form-control" id="dropoffDate" name = "dropoff_date">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="pickupTime" class="form-label">Pickup Time</label>
+                        <input type="time" class="form-control" id="pickupTime" name = "pickup_time">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="dropoffTime" class="form-label">Dropoff Time</label>
+                        <input type="time" class="form-control" id="dropoffTime" name = "dropoff_time">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="pickupLocation" class="form-label">Pickup Location</label>
+                        <select class="form control" id="pickupLocation" name = "pickup_location" placeholder="Enter starting point" style = "margin-left: 10px;">
+                            <option value="" disabled selected>Select your starting point</option>
+                            <option value="lucena_grand_terminal_pick" {% if form.pickup_location.value == "lucena_grand_terminal_pick" %} selected {% endif %}>Lucena Grand Terminal</option>
+                            <option value="groto_lucban_quezon_pick" {% if form.pickup_location.value == "groto_lucban_quezon_pick" %} selected {% endif %}>Groto Lucban Quezon</option>
+                            <option value="tayabas_city_quezon_pick " {% if form.pickup_location.value == "tayabas_city_quezon_pick" %} selected {% endif %}>Tayabas City Quezon</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="dropoffLocation" class="form-label">Dropoff Location</label>
+                        <select class="form control" id="dropoffLocation" name = "dropoff_location" placeholder="Enter end point" style = "margin-left: 10px;">
+                            <option value="" disabled selected>Select your destination</option>
+                            <option value="lucena_grand_terminal_drop" {% if form.dropoff_location.value == "lucena_grand_terminal_drop" %} selected {% endif %}>Lucena Grand Terminal</option>
+                            <option value="groto_lucban_quezon_drop" {% if form.dropoff_location.value == "groto_lucban_quezon_drop" %} selected {% endif %}>Groto Lucban Quezon</option>
+                            <option value="tayabas_city_quezon_drop" {% if form.dropoff_location.value == "tayabas_city_quezon_drop" %} selected {% endif %}>Tayabas City Quezon</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Google Maps -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div id="map" style="height: 300px; width: 100%;"></div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="vehicle" class="form-label">Vehicle</label>
+                        <select class="form-control" id="vehicle" name = "vehicle">
+                            <option value="">Select a vehicle</option>
+                            <option value="Toyota Corolla">Class A - Toyota Corolla - 6 Seats</option>
+                            <option value="Modernized PUV V1">Class B - Modernized PUV V1 - 15 Seats</option>
+                            <option value="Modernized PUV V2">Class B - Modernized PUV V2 - 15 Seats</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="paymentMethod" class="form-label">Select Payment Method</label>
+                        <select class="form-control" id="paymentMethod" name = "payment_method">
+                            <option value="">Select Payment Method</option>
+                            <option value="gcash">GCash</option>
+                            <option value="cash">On-hand Payment (CASH)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="totalFare" class="form-label">Total Fare</label>
+                        <input class="form-control" type="text" id="totalFare" name="total_fare" placeholder="" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" id="roundtrip" name = "roundtrip">
+                            <label class="form-check-label" for="roundtrip">Roundtrip</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Upload Section (Hidden by Default) -->
+                <div class="mb-3" id="gcashSection" style="display: none;">
+                    <label for="gcashReceipt" class="form-label">Upload GCash receipt</label>
+                    <input type="file" class="form-control" id="gcashReceipt" accept="image/*" onchange="previewGcashReceipt(event)">
+
+                    <div class="position-relative mt-3">
+                        <img id="gcashPreview" src="#" alt="GCash Receipt Preview" class="img-fluid" style="display: none; max-width: 100%; height: auto;">
+                        <button type="button" id="removePhoto" class="btn btn-danger position-absolute" aria-label="Remove" style="border-radius: 10px; height: 30px; width: 50px; top: 5px; right: 5px; display: none; padding: 5px;" onclick="removeGcashReceipt()">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+
+                    <p>Please upload your GCash payment receipt (Image file only).</p>
+                </div>
+
+                <button type="submit" class="btn btn-primary" action = "{% url 'reservation_form_view'%}">Submit Reservation Form</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const vehicleSelect = document.getElementById("vehicle");
+        const roundtripCheckbox = document.getElementById("roundtrip");
+        const totalFareField = document.getElementById("totalFare");
+
+        function calculateTotalFare() {
+            const selectedVehicle = vehicleSelect.options[vehicleSelect.selectedIndex];
+            const baseFare = selectedVehicle.dataset.fare ? parseFloat(selectedVehicle.dataset.fare) : 0;
+            const isRoundtrip = roundtripCheckbox.checked;
+            
+            let totalFare = baseFare;
+
+            // Add roundtrip multiplier if checked
+            if (isRoundtrip) {
+                totalFare *= 2;
+            }
+
+            // Update the Total Fare field
+            totalFareField.value = totalFare ? `₱${totalFare.toFixed(2)}` : "";
+        }
+
+        // Add event listeners
+        vehicleSelect.addEventListener("change", calculateTotalFare);
+        roundtripCheckbox.addEventListener("change", calculateTotalFare);
+    });
+</script>
+{% endblock reservation_form %}
+
+{% block footer %}
+<footer class="bg-light text-center text-lg-start">
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        <span>&copy; 2024 Byahe Online Travel Reservation. All Rights Reserved.</span>
+    </div>
+</footer>
+{% endblock footer %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+3I4kqj6l0/4eQl56Cvxa5bJRFp3K8CzkY8W1O" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-Oz6No2G9MzLqzKZcTXKdjv9h4TIW4M8a0Z4EHTHFLRe8xgEqZ9R/jZX+5b10Xg==" crossorigin="anonymous"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+<script>
+    function initMap() {
+        var pickupLocation = { lat: 14.5995, lng: 120.9842 }; // Default location
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 10,
+            center: pickupLocation
+        });
+
+        var marker = new google.maps.Marker({
+            position: pickupLocation,
+            map: map,
+            title: 'Pickup Location'
+        });
+
+        var input = document.getElementById('pickupLocation');
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        
+        google.maps.event.addListener(autocomplete, 'place_changed', function() {
+            var place = autocomplete.getPlace();
+            if (place.geometry) {
+                map.setCenter(place.geometry.location);
+                marker.setPosition(place.geometry.location);
+            }
+        });
+    }
+</script>
+
+</html>
