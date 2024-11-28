@@ -20,7 +20,7 @@ from .decorators import admin_only
 def Home(request):
     return render(request, 'index.html')
 #ADMIN DASHBOARD
-@admin_only
+
 def admin_dashboard(request):
     
     # Fetch data from the database
@@ -33,7 +33,7 @@ def admin_dashboard(request):
     })
 
 #ADMIN user profiles
-@admin_only
+
 def admin_users(request):
     # Fetch data from the database
     
@@ -42,7 +42,7 @@ def admin_users(request):
     return render(request, 'admin/users.html', {
         'users': users,
     })
-@admin_only
+
 def add_user(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -75,7 +75,7 @@ def add_user(request):
 
     return redirect('admin_users') 
 
-@admin_only
+
 def add_admin(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -137,7 +137,7 @@ def add_driver(request):
         return redirect('admin_dashboard')
 
 #ADMIN delete user
-@admin_only
+
 def delete_user(request, user_id):
     user = get_object_or_404(User, id=user_id)
     if request.method == "POST":
@@ -158,7 +158,7 @@ def some_view(request):
 
 
 #DRIVERS
-@admin_only
+
 def driver_dashboard(request):
     
     # Fetch data from the database
@@ -170,7 +170,7 @@ def driver_dashboard(request):
         'reservations': reservations,
     })
 
-@admin_only
+
 def admin_tracking(request):
     
     # Fetch data from the database
@@ -182,7 +182,7 @@ def admin_tracking(request):
         'reservations': reservations,
     })
 
-@admin_only
+
 def admin_vehicles(request):
     
     # Fetch data from the database
@@ -216,7 +216,7 @@ def admin_reviews(request):
         'reservations': reservations,
     })
 
-@login_required
+
 def LoggedInView(request):
     return render(request, 'index-logged.html')
 
@@ -363,7 +363,7 @@ def ForgotPassword(request):
 
     return render(request, 'forgot-password.html')
 
-@login_required
+
 def ForgotPass2(request, reset_id): #password reset sent view
 
     if PasswordReset.objects.filter(reset_id=reset_id).exists():
@@ -426,7 +426,7 @@ def ChangePassword(request, reset_id):
         return render(request, 'change-pass.html')
 
 #reservation form view
-@login_required
+
 def reservation_form_view(request):
     if request.method == 'POST':
         form = ReservationForm(request.POST, request.FILES)
@@ -500,7 +500,7 @@ def CalculateFareView(request):
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
-@login_required
+
 def ReservationSuccessView(request, reservation_id):
     reservation = get_object_or_404(Reservation, id=reservation_id)
 
